@@ -8,10 +8,10 @@ Ce projet constitue le **projet final** de la certification **Développeur Intel
 
 **Compétences évaluées (Bloc C5)** :
 
-- **C1** : Préparer des données non structurées en les convertissant en données numériques
-- **C2** : Sélectionner l'algorithme d'apprentissage profond le plus adapté
-- **C3** : Entraîner un modèle d'apprentissage profond en optimisant une loss function
-- **C4** : Déployer efficacement un modèle d'apprentissage profond
+- **C1** : préparer des données non structurées en les convertissant en données numériques
+- **C2** : sélectionner l'algorithme d'apprentissage profond le plus adapté
+- **C3** : entraîner un modèle d'apprentissage profond en optimisant une loss function
+- **C4** : déployer efficacement un modèle d'apprentissage profond
 
 ## 🎯 Vue d'ensemble
 
@@ -27,11 +27,11 @@ Ce projet documente une **approche itérative** d'amélioration continue, avec 4
 
 ![Raw Model Architecture](reports/architecture_images/raw.png)
 
-- **Approche** : Utilisation d'EfficientNetB0 pré-entraîné **sans modification**
+- **Approche** : utilisation d'EfficientNetB0 pré-entraîné **sans modification**
 - **Architecture** : `EfficientNetB0 (frozen) → GlobalAveragePooling → Features (1280D)`
-- **Technique** : Extraction de features natives sans entraînement supplémentaire
-- **Avantages** : Rapide à implementer, baseline solide
-- **Limites** : Pas optimisé pour la similarité de recettes
+- **Technique** : extraction de features natives sans entraînement supplémentaire
+- **Avantages** : rapide à implementer, baseline solide
+- **Limites** : pas optimisé pour la similarité de recettes
 - **Temps** : ~5 minutes setup
 
 ### 2. 🔥 Transfer Learning Simple (`recipe_image_retrieval_tl.ipynb`)
@@ -40,14 +40,14 @@ Ce projet documente une **approche itérative** d'amélioration continue, avec 4
 
 > _Architecture similaire au TL Hard ci-dessous, mais avec random sampling au lieu de hard negative mining_
 
-- **Approche** : Triplet Loss avec EfficientNet gelé + tête personnalisée
+- **Approche** : triplet Loss avec EfficientNet gelé + tête personnalisée
 - **Architecture** : `EfficientNetB0 (frozen) → Custom Head (1024→512) → L2 Norm`
 - **Technique** :
   - **Random sampling** pour les triplets (anchor, positive, negative)
   - **Triplet Loss** avec margin = 0.3
   - Métrique : `triplet_accuracy` (pos_sim > neg_sim)
-- **Amélioration** : Embeddings optimisés pour la similarité de recettes
-- **Limite** : Sampling aléatoire pas optimal, métrique peu informative
+- **Amélioration** : embeddings optimisés pour la similarité de recettes
+- **Limite** : sampling aléatoire pas optimal, métrique peu informative
 - **Temps** : ~30-45 minutes
 
 ### 3. ⚡ Transfer Learning Amélioré (`recipe_image_retrieval_tl_hard.ipynb`)
@@ -56,37 +56,37 @@ Ce projet documente une **approche itérative** d'amélioration continue, avec 4
 
 ![Transfer Learning Hard Architecture](reports/architecture_images/tl_hard.png)
 
-- **Approche** : Transfer Learning avec **hard negative mining**
-- **Architecture** : Identique au TL simple mais avec sampling intelligent
+- **Approche** : transfer Learning avec **hard negative mining**
+- **Architecture** : identique au TL simple mais avec sampling intelligent
 - **Technique** :
   - **Hard negative sampling** : sélection des négatifs les plus difficiles
   - **Triplet margin accuracy** : mesure si `pos_sim - neg_sim > margin`
   - Amélioration de l'efficacité d'entraînement
 - **Avantages** :
-  - Apprentissage plus efficace avec exemples difficiles
-  - Métrique plus informative (respect du margin)
-  - Convergence plus rapide
+  - apprentissage plus efficace avec exemples difficiles
+  - métrique plus informative (respect du margin)
+  - convergence plus rapide
 - **Temps** : ~30-45 minutes (mais plus efficace)
 
-### 4. 🚀 Fine-tuning 2 Phases (`recipe_image_retrieval_ft_hard.ipynb`)
+### 4. 🚀 Fine-tuning 2 phases (`recipe_image_retrieval_ft_hard.ipynb`)
 
 **Quatrième approche - Fine-tuning en 2 phases**
 
-![Fine-tuning 2 Phases Architecture](reports/architecture_images/ft_hard.png)
+![Fine-tuning 2 phases Architecture](reports/architecture_images/ft_hard.png)
 
-- **Approche** : Fine-tuning en **2 phases** avec hard negative sampling
+- **Approche** : fine-tuning en **2 phases** avec hard negative sampling
 - **Architecture** :
-  - **Phase 1** : Transfer Learning (EfficientNet gelé + Custom Head)
-  - **Phase 2** : Fine-tuning (40 couches EfficientNet dégelées)
+  - **Phase 1** : transfer Learning (EfficientNet gelé + Custom Head)
+  - **Phase 2** : fine-tuning (40 couches EfficientNet dégelées)
 - **Technique** :
-  - **Phase 1** : Entraînement de la tête personnalisée uniquement
-  - **Phase 2** : Dégelage intelligent de 40 couches avec learning rates différentiés
+  - **Phase 1** : entraînement de la tête personnalisée uniquement
+  - **Phase 2** : dégelage intelligent de 40 couches avec learning rates différentiés
   - **Hard negative sampling** pour optimiser l'apprentissage
   - **Triplet margin accuracy** pour un suivi précis
 - **Avantages** :
-  - Adaptation fine du backbone EfficientNet
-  - Performances maximales
-  - Entraînement stable et contrôlé
+  - adaptation fine du backbone EfficientNet
+  - performances maximales
+  - entraînement stable et contrôlé
 - **Temps** : ~1-2 heures
 
 ## 🔬 Comparaison des techniques et performances attendues
@@ -96,14 +96,14 @@ Ce projet documente une **approche itérative** d'amélioration continue, avec 4
 | **Raw**         | Features natives | -             | Similarité cosinus      | Gelé                | 5 min  | 🟡 Baseline   |
 | **TL Simple**   | Triplet Loss     | Random        | triplet_accuracy        | Gelé                | 45 min | 🟢 Bonne      |
 | **TL Hard**     | Triplet Loss     | Hard negative | triplet_margin_accuracy | Gelé                | 45 min | 🟢 Très bonne |
-| **FT 2 Phases** | Fine-tuning      | Hard negative | triplet_margin_accuracy | 40 couches dégelées | 2h     | 🟢 Excellente |
+| **FT 2 Phases** | Fine-tuning      | Hard negative | triplet_margin_accuracy | 40 couches dégelées | 1h30   | 🟢 Excellente |
 
 ## 🛠️ Installation
 
 ### Prérequis
 
 - **Python 3.12+** installé
-- **Au moins 8GB de RAM** (recommandé: 16GB+)
+- **Au moins 8GB de RAM** (recommandé : 16GB+)
 - **Espace disque** : ~5GB pour les données et modèles
 - **GPU recommandé** pour le fine-tuning
 
@@ -131,7 +131,7 @@ pip install -r requirements.txt
 jupyter notebook
 ```
 
-## 📊 Structure du Projet
+## 📊 Structure du projet
 
 ```
 itadaki/
@@ -149,7 +149,7 @@ itadaki/
 │   │   ├── best_embedding_recipe_image_retrieval_model_tl.keras  # Modèle embeddings
 │   │   ├── recipe_embeddings_database_tl.npy                     # Base embeddings (512D)
 │   │   └── recipe_embeddings_database_metadata_tl.pkl            # Metadata pour recherche
-│   ├── ft/                                      # 🚀 Fine-tuning 2 Phases
+│   ├── ft/                                      # 🚀 Fine-tuning 2 phases
 │   │   ├── best_embedding_recipe_image_retrieval_model_ft.keras  # Modèle embeddings
 │   │   ├── recipe_embeddings_database_ft.npy                     # Base embeddings (512D)
 │   │   └── recipe_embeddings_database_metadata_ft.pkl            # Metadata pour recherche
@@ -195,7 +195,7 @@ Chaque dossier de modèle (`raw/`, `tl/`, `ft/`) contient **3 fichiers essentiel
 
 ## 🚀 Guide d'utilisation
 
-### Approche Recommandée : Progression Séquentielle
+### Approche recommandée : progression séquentielle
 
 Pour comprendre l'évolution du projet, il est recommandé de suivre les notebooks dans l'ordre :
 
@@ -205,8 +205,8 @@ Pour comprendre l'évolution du projet, il est recommandé de suivre les noteboo
 jupyter notebook recipe_image_retrieval_raw.ipynb
 ```
 
-- Comprendre la baseline et l'extraction de features
-- Tester rapidement le système
+- comprendre la baseline et l'extraction de features
+- tester rapidement le système
 
 #### 2. Continuer avec Transfer Learning Simple
 
@@ -214,8 +214,8 @@ jupyter notebook recipe_image_retrieval_raw.ipynb
 jupyter notebook recipe_image_retrieval_tl.ipynb
 ```
 
-- Découvrir le Triplet Loss et l'optimisation d'embeddings
-- Voir l'amélioration par rapport au raw model
+- découvrir le Triplet Loss et l'optimisation d'embeddings
+- voir l'amélioration par rapport au raw model
 
 #### 3. Améliorer avec Hard Negative Sampling
 
@@ -223,21 +223,21 @@ jupyter notebook recipe_image_retrieval_tl.ipynb
 jupyter notebook recipe_image_retrieval_tl_hard.ipynb
 ```
 
-- Comprendre l'importance du sampling intelligent
-- Observer l'amélioration de l'efficacité d'entraînement
+- comprendre l'importance du sampling intelligent
+- observer l'amélioration de l'efficacité d'entraînement
 
-#### 4. Finaliser avec Fine-tuning 2 Phases
+#### 4. Finaliser avec Fine-tuning 2 phases
 
 ```bash
 jupyter notebook recipe_image_retrieval_ft_hard.ipynb
 ```
 
-- Découvrir le fine-tuning sophistiqué
-- Obtenir les meilleures performances
+- découvrir le fine-tuning
+- obtenir les meilleures performances
 
-## 🎯 Utilisation du Système
+## 🎯 Utilisation du système
 
-### Interface Commune à tous les Notebooks
+### Interface commune à tous les notebooks
 
 ```python
 # 1. Charger votre image
@@ -250,7 +250,7 @@ results = retrieval_system.search_similar_recipes(query_image, top_k=3)
 retrieval_system.display_results(query_image, results)
 ```
 
-### Fonctionnalités Avancées
+### Fonctionnalités avancées
 
 ```python
 # Visualiser l'architecture du modèle
@@ -270,14 +270,126 @@ retrieval_system.evaluate_model()
 🔗 **Lien Kaggle** : https://www.kaggle.com/datasets/pes12017000148/food-ingredients-and-recipe-dataset-with-images
 
 - **13,463 recettes uniques** avec images HD
-- **Ingrédients détaillés** et instructions complètes
-- **Images haute qualité** (224x224 minimum)
-- **Téléchargement automatique** via `kagglehub`
-- **Taille totale** : ~2GB
+- **ingrédients détaillés** et instructions complètes
+- **images haute qualité** (224x224 minimum)
+- **téléchargement automatique** via `kagglehub`
+- **taille totale** : ~2GB
 
-## 🔧 Architecture Technique Détaillée
+## 🏗️ Choix d'architecture : pourquoi EfficientNetB0 ?
 
-### Configuration par Notebook
+### 🎯 Comparaison des architectures backbone
+
+| Architecture                 | Paramètres | Précision ImageNet | Temps inférence | Avantages           | Inconvénients              |
+| ---------------------------- | ---------- | ------------------ | --------------- | ------------------- | -------------------------- |
+| **EfficientNetB0** ✅        | 5.3M       | 77.1%              | Rapide          | Équilibre optimal   | Relativement récent        |
+| **ResNet50**                 | 25.6M      | 76.0%              | Moyen           | Très stable, prouvé | Plus lourd, moins efficace |
+| **MobileNetV2**              | 3.5M       | 71.8%              | Très rapide     | Très léger          | Précision plus faible      |
+| **Vision Transformer (ViT)** | 86M+       | 81.8%              | Lent            | SOTA précision      | Très gourmand, complexe    |
+
+### 🔍 Justification du choix EfficientNetB0
+
+#### ✅ **Avantages décisifs**
+
+1. **🎯 Équilibre optimal** : EfficientNetB0 offre le meilleur compromis précision/efficacité
+
+   - **précision** : 77.1% sur ImageNet (supérieure à ResNet50 et MobileNet)
+   - **efficacité** : 5.3M paramètres seulement (5x moins que ResNet50)
+   - **vitesse** : inférence rapide adaptée à la recherche de similarité
+
+2. **🚀 Architecture moderne** : compound scaling et optimisations avancées
+
+   - **compound scaling** : équilibre intelligente depth/width/resolution
+   - **inverted bottlenecks** : efficacité computationnelle maximale
+   - **squeeze-and-excitation** : attention sur les channels importants
+
+3. **🔧 Facilité d'intégration** : support natif TensorFlow/Keras
+   - **pré-entraîné ImageNet** : features visuelles génériques de qualité
+   - **transfert learning** : adaptation facile pour les recettes
+   - **compatibilité** : stable avec l'écosystème TensorFlow
+
+#### ❌ **Pourquoi pas les autres ?**
+
+##### **ResNet50** - trop lourd pour le contexte
+
+- **25.6M paramètres** : 5x plus lourd qu'EfficientNet
+- **précision inférieure** : 76.0% vs 77.1% sur ImageNet
+- **architecture plus ancienne** : moins d'optimisations modernes
+
+##### **MobileNetV2** - précision insuffisante
+
+- **précision limitée** : 71.8% sur ImageNet (6% de moins)
+- **features moins riches** : impact sur la qualité des embeddings
+- **optimisé mobile** : pas nécessaire pour notre use case
+
+##### **Vision Transformers (ViT)** - trop complexe pour débuter
+
+- **🔥 très gourmand** : 86M+ paramètres (16x plus qu'EfficientNet)
+- **💻 ressources importantes** : nécessite GPU puissant et beaucoup de RAM
+- **⚡ lent à l'inférence** : on voulait un système assez réactif
+- **🧠 complexité élevée** : architecture plus difficile à comprendre/déboguer
+- **📊 données nécessaires** : performances optimales avec datasets énormes
+- **🎓 contexte apprentissage** : moins adapté pour une première approche
+
+### 🎯 Contexte du projet et contraintes
+
+#### **Contraintes techniques**
+
+- **💻 ressources limitées** : développement sur hardware standard et cloud (mais budget limité)
+- **⏱️ temps de développement** : formation intensive, itération rapide nécessaire
+- **📚 apprentissage progressif** : maîtrise des concepts avant optimisations avancées
+
+#### **Objectifs pédagogiques**
+
+- **🔍 compréhension** : architecture simple à analyser et expliquer
+- **🛠️ mise en pratique** : focus sur les techniques d'entraînement (triplet loss) et quelques optimisations (hard negative mining)
+- **📈 progression** : de la baseline vers le fine-tuning en 2 phases
+
+### 💡 Évolution future possible
+
+**Pour des performances maximales** (contexte production) :
+
+- **EfficientNet-B2/B4** : compromis précision/efficacité supérieur
+- **dataset plus conséquent** : il y a une amélioration directe en rapport avec la quantité de données
+- **🤔 utilisation de Food101 ?** : https://www.tensorflow.org/datasets/catalog/food101?hl=fr
+
+#### ✅ **Approche complémentaire : Enrichissement par tags**
+
+**💡 Idée clée** : utiliser Food101 pour **enrichir** le dataset actuel avec des tags alimentaires !
+
+##### **🎯 Stratégie d'enrichissement**
+
+1. **📋 conserver le dataset actuel (ou équivalent plus conséquent)** : toutes les recettes avec métadonnées
+2. **🏷️ ajouter des tags Food101** : classifier chaque image avec les 101 catégories
+3. **🔄 créer des triplets intelligents** : utiliser les tags pour un sampling plus pertinent
+
+##### **🚀 Avantages de cette approche**
+
+1. **🎯 triplets plus cohérents** :
+
+   - **anchor** : Pizza margherita
+   - **positive** : Pizza 4 fromages (même catégorie visuelle)
+   - **negative** : Sushi (catégorie visuelle différente)
+
+2. **🧠 apprentissage plus efficace** :
+
+   - triplets visuellement logiques
+   - meilleure séparation des embeddings
+   - convergence plus rapide
+
+3. **📊 métriques améliorées** :
+
+   - triplet margin accuracy plus élevée
+   - similarité intra-classe renforcée
+   - séparation inter-classe optimisée
+
+4. **🔄 sampling intelligent** :
+   - remplacement du random sampling
+   - alternative au hard negative mining
+   - approche hybride : tags + difficulté
+
+## 🔧 Architecture technique détaillée
+
+### Configuration par notebook
 
 #### Raw Model
 
@@ -315,7 +427,7 @@ CONFIG_TL_HARD = {
 }
 ```
 
-#### Fine-tuning 2 Phases
+#### Fine-tuning 2 phases
 
 ```python
 CONFIG_FT = {
@@ -330,30 +442,30 @@ CONFIG_FT = {
 }
 ```
 
-## 📈 Évolution des Performances
+## 📈 Évolution des performances
 
-### Métriques Clés
+### Métriques clés
 
-| Notebook    | Métrique Principale     | Dimension | Sampling      | Temps Train |
+| Notebook    | Métrique principale     | Dimension | Sampling      | Temps train |
 | ----------- | ----------------------- | --------- | ------------- | ----------- |
 | Raw         | N/A                     | 1280D     | N/A           | N/A         |
 | TL Simple   | triplet_accuracy        | 512D      | Random        | 30 min      |
 | TL Hard     | triplet_margin_accuracy | 512D      | Hard negative | 35 min      |
-| FT 2 Phases | triplet_margin_accuracy | 512D      | Hard negative | 90 min      |
+| FT 2 phases | triplet_margin_accuracy | 512D      | Hard negative | 90 min      |
 
-### Amélioration Progressive
+### Amélioration progressive
 
-1. **Raw → TL Simple** : Embeddings optimisés pour la similarité
-2. **TL Simple → TL Hard** : Sampling intelligent + métrique plus précise
-3. **TL Hard → FT 2 Phases** : Adaptation fine du backbone pour performances maximales
+1. **Raw → TL Simple** : embeddings optimisés pour la similarité
+2. **TL Simple → TL Hard** : sampling intelligent + métrique plus précise
+3. **TL Hard → FT 2 phases** : adaptation fine du backbone pour performances maximales
 
-## 🖼️ Images de Test
+## 🖼️ Images de test
 
 Le dossier `test_recipes/` contient des images variées pour tester les différents modèles :
 
 ```python
 # Exemple d'utilisation
-test_image = "./test_recipes/fraisier-matcha.jpg"
+test_image = "./test_recipes/1.jpg"
 results = retrieval_system.search_similar_recipes(test_image, top_k=5)
 ```
 
@@ -361,49 +473,49 @@ results = retrieval_system.search_similar_recipes(test_image, top_k=5)
 
 ### 1. Triplet Loss
 
-Optimisation de la distance entre embeddings pour maximiser la similarité intra-classe et minimiser la similarité inter-classe.
+optimisation de la distance entre embeddings pour maximiser la similarité intra-classe et minimiser la similarité inter-classe.
 
 ### 2. Hard Negative Mining
 
-Sélection intelligente des exemples négatifs les plus difficiles pour améliorer l'efficacité d'entraînement.
+sélection intelligente des exemples négatifs les plus difficiles pour améliorer l'efficacité d'entraînement.
 
-### 3. Fine-tuning 2 Phases
+### 3. Fine-tuning 2 phases
 
-Approche progressive : d'abord entraîner la tête personnalisée, puis adapter le backbone pré-entraîné.
+approche progressive : d'abord entraîner la tête personnalisée, puis adapter le backbone pré-entraîné.
 
 ### 4. Triplet Margin Accuracy
 
-Métrique avancée qui mesure si la différence `pos_similarity - neg_similarity > margin`, plus informative que la Triplet Accuracy.
+métrique avancée qui mesure si la différence `pos_similarity - neg_similarity > margin`, plus informative que la Triplet Accuracy.
 
-## 🎯 Résultats et Apprentissages
+## 🎯 Résultats et apprentissages
 
-### Principales Découvertes
+### Principales découvertes
 
-1. **Raw Model** : Baseline solide mais non optimisée
-2. **Random Sampling** : Efficace mais sous-optimal
-3. **Hard Negative Mining** : Amélioration significative de l'efficacité
-4. **Fine-tuning 2 Phases** : Performances maximales avec contrôle total
+1. **Raw model** : baseline solide mais non optimisée
+2. **Random Sampling** : efficace mais sous-optimal
+3. **Hard Negative Mining** : amélioration significative de l'efficacité
+4. **Fine-tuning 2 phases** : performances maximales avec contrôle total
 
 ### Recommandations
 
-- **Pour tests rapides** : Utiliser le Raw Model
-- **Pour production** : Transfer Learning Hard est le meilleur compromis
-- **Pour recherche avancée** : Fine-tuning 2 Phases pour performances maximales
+- **pour tests rapides** : utiliser le Raw Model
+- **pour production** : Transfer Learning Hard est le meilleur compromis
+- **pour recherche avancée** : Fine-tuning 2 phases pour performances maximales
 
-## 📚 Technologies Utilisées
+## 📚 Technologies utilisées
 
-- **TensorFlow/Keras** : Framework d'apprentissage profond
-- **EfficientNetB0** : Architecture de backbone
-- **OpenCV** : Traitement d'images
-- **Matplotlib/Seaborn** : Visualisations
-- **NumPy/Pandas** : Manipulation de données
-- **Kagglehub** : Téléchargement de dataset
+- **TensorFlow/Keras** : framework d'apprentissage profond
+- **EfficientNetB0** : architecture de backbone
+- **OpenCV** : traitement d'images
+- **Matplotlib/Seaborn** : visualisations
+- **NumPy/Pandas** : manipulation de données
+- **Kagglehub** : téléchargement de dataset
 
-## 🎓 Conclusion
+## 🎓 Conclusions
 
 Ce projet démontre une approche méthodique d'amélioration continue en intelligence artificielle, depuis une baseline simple jusqu'à des techniques avancées de fine-tuning. Chaque notebook apporte des améliorations progressives et documente les apprentissages obtenus.
 
-La progression **Raw → TL Simple → TL Hard → FT 2 Phases** illustre parfaitement comment optimiser graduellement un système d'apprentissage profond pour obtenir des performances maximales.
+La progression **Raw → TL Simple → TL Hard → FT 2 phases** illustre parfaitement comment optimiser graduellement un système d'apprentissage profond pour obtenir des performances maximales.
 
 ---
 
