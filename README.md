@@ -25,6 +25,8 @@ Ce projet documente une **approche itérative** d'amélioration continue, avec 4
 
 **Premier essai - EfficientNet gelé**
 
+![Raw Model Architecture](reports/architecture_images/raw.png)
+
 - **Approche** : Utilisation d'EfficientNetB0 pré-entraîné **sans modification**
 - **Architecture** : `EfficientNetB0 (frozen) → GlobalAveragePooling → Features (1280D)`
 - **Technique** : Extraction de features natives sans entraînement supplémentaire
@@ -35,6 +37,8 @@ Ce projet documente une **approche itérative** d'amélioration continue, avec 4
 ### 2. 🔥 Transfer Learning Simple (`recipe_image_retrieval_tl.ipynb`)
 
 **Deuxième approche - Transfer Learning avec sampling aléatoire**
+
+> _Architecture similaire au TL Hard ci-dessous, mais avec random sampling au lieu de hard negative mining_
 
 - **Approche** : Triplet Loss avec EfficientNet gelé + tête personnalisée
 - **Architecture** : `EfficientNetB0 (frozen) → Custom Head (1024→512) → L2 Norm`
@@ -49,6 +53,8 @@ Ce projet documente une **approche itérative** d'amélioration continue, avec 4
 ### 3. ⚡ Transfer Learning Amélioré (`recipe_image_retrieval_tl_hard.ipynb`)
 
 **Troisième approche - Negative Sampling**
+
+![Transfer Learning Hard Architecture](reports/architecture_images/tl_hard.png)
 
 - **Approche** : Transfer Learning avec **hard negative mining**
 - **Architecture** : Identique au TL simple mais avec sampling intelligent
@@ -65,6 +71,8 @@ Ce projet documente une **approche itérative** d'amélioration continue, avec 4
 ### 4. 🚀 Fine-tuning 2 Phases (`recipe_image_retrieval_ft_hard.ipynb`)
 
 **Quatrième approche - Fine-tuning en 2 phases**
+
+![Fine-tuning 2 Phases Architecture](reports/architecture_images/ft_hard.png)
 
 - **Approche** : Fine-tuning en **2 phases** avec hard negative sampling
 - **Architecture** :
@@ -152,6 +160,7 @@ itadaki/
 │   └── test_recipes/                            # Images de test variées
 ├── 📊 RAPPORTS
 │   └── reports/                                 # Analyses et visualisations
+│       └── architecture_images/                 # Images d'architecture des modèles
 └── 🔧 CONFIGURATION
     ├── requirements.txt
     └── README.md
@@ -285,7 +294,7 @@ CONFIG_RAW = {
 ```python
 CONFIG_TL = {
     'IMG_SIZE': 224,
-    'BATCH_SIZE': 16,
+    'BATCH_SIZE': 32,
     'EMBEDDING_DIM': 512,
     'TRIPLET_MARGIN': 0.3,
     'EPOCHS': 10,
@@ -298,7 +307,7 @@ CONFIG_TL = {
 ```python
 CONFIG_TL_HARD = {
     'IMG_SIZE': 224,
-    'BATCH_SIZE': 16,
+    'BATCH_SIZE': 32s,
     'EMBEDDING_DIM': 512,
     'TRIPLET_MARGIN': 0.8,
     'EPOCHS': 15,
