@@ -1,0 +1,76 @@
+# Virtual environment
+itadaki_env/
+venv/
+env/
+
+# Python cache files
+__pycache__/
+*.py[cod]
+*$py.class
+*.so
+
+# Jupyter Notebook checkpoints
+.ipynb_checkpoints/
+
+# Data files (large datasets)
+*.csv
+*.h5
+*.pkl
+data/
+Food Images/
+logs/
+
+# Kaggle cache
+.cache/
+
+# Model files (can be large)
+*.model
+image_feature_extractor.h5
+image_to_recipe_model*.h5
+recipe_*.pkl
+valid_recipe_image_pairs.csv
+test_results.json
+
+# OS generated files
+.DS_Store
+.DS_Store?
+._*
+.Spotlight-V100
+.Trashes
+ehthumbs.db
+Thumbs.db
+
+# IDE files
+.vscode/
+.idea/
+*.swp
+*.swo
+
+# Temporary files
+temp/
+test_recipes/
+downloaded_*.jpg
+
+# Utility scripts
+cleanup_notebooks.py
+
+# Environment variables
+.env
+
+# Distribution / packaging
+.Python
+build/
+develop-eggs/
+dist/
+downloads/
+eggs/
+.eggs/
+lib/
+lib64/
+parts/
+sdist/
+var/
+wheels/
+*.egg-info/
+.installed.cfg
+*.egg 

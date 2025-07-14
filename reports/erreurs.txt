@@ -1,0 +1,14 @@
+normalisation /255 au lieu de preprocess de efficientnet
+
+Loss inadaptée => constrastive loss initialement mais cela n'est pas fait pour des embeddings déjà normalisés
+Il faut plutôt utiliser une triplet loss ou cosine similarity loss
+
+Erreur => augmentation activée sur données de validation :(
+
+Moins de couche sur la tête custom (ça suffit pour tester le transfer learning, le plus important reste le fine tuning)
+
+Custom Lambda à la place des custom Layer
+
+Sauvegarde du triplet model au lieu de l'embedding model...
+
+Triplet trop faciles => adapter la margin via un callback + triplet_margin_accuracy à la place de triplet_accuracy + hard negative sampling
