@@ -1,0 +1,3 @@
+"""
+Itadaki API Application Package
+""" 

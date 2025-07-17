@@ -15,8 +15,6 @@ __pycache__/
 # Data files (large datasets)
 *.csv
 *.h5
-*.pkl
-data/
 Food Images/
 logs/
 
@@ -27,7 +25,6 @@ logs/
 *.model
 image_feature_extractor.h5
 image_to_recipe_model*.h5
-recipe_*.pkl
 valid_recipe_image_pairs.csv
 test_results.json
 
