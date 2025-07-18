@@ -35,23 +35,28 @@ class SearchService:
             cls._instance = cls()
         return cls._instance
     
-    def _ensure_model_loaded(self) -> bool:
-        """Ensure model is loaded at startup"""
-        if not self._is_loaded:
-            logger.info("First usage detected - loading search system...")
-            if SearchService._model_loader is None:
-                from ..utils.model_loader import RecipeImageRetrievalFT
-                SearchService._model_loader = RecipeImageRetrievalFT()
+    @classmethod
+    async def initialize_model(cls) -> bool:
+        """Initialize model at application startup"""
+        try:
+            logger.info("Starting model initialization at application startup...")
             
-            success = SearchService._model_loader.load_system()
+            if cls._model_loader is None:
+                from ..utils.model_loader import RecipeImageRetrievalFT
+                cls._model_loader = RecipeImageRetrievalFT()
+            
+            success = cls._model_loader.load_system()
             if success:
-                self._is_loaded = True
-                logger.info("Search system fully loaded with model ready!")
+                cls._is_loaded = True
+                logger.info("Search system fully loaded and ready at startup!")
+                return True
             else:
-                logger.error("Failed to load search system")
+                logger.error("Failed to load search system at startup")
                 return False
-        
-        return self._is_loaded
+                
+        except Exception as e:
+            logger.error(f"Error during model initialization: {e}")
+            return False
     
     def is_model_loaded(self) -> bool:
         """Check if model is loaded and ready"""
@@ -70,8 +75,9 @@ class SearchService:
         start_time = time.time()
         
         try:
-            if not self._ensure_model_loaded():
-                error_msg = "Search model failed to load. Please check server logs."
+            # Model should already be loaded at startup
+            if not self.is_model_loaded():
+                error_msg = "Search model is not loaded. Please restart the application."
                 logger.error(error_msg)
                 return RecipeSearchResultDomain(
                     recipes=[],

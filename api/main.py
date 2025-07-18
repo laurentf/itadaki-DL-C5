@@ -32,12 +32,43 @@ app.add_middleware(
     max_age=3600,
 )
 
+@app.on_event("startup")
+async def startup_event():
+    """Load model and embeddings at application startup"""
+    startup_logger = logging.getLogger(__name__)
+    startup_logger.info("Itadaki API is starting up...")
+    
+    try:
+        from features.search.services.search_service import SearchService
+        success = await SearchService.initialize_model()
+        
+        if success:
+            startup_logger.info("Startup completed successfully! API ready for fast searches.")
+        else:
+            startup_logger.error("Startup completed with errors. Model loading failed.")
+            
+    except Exception as e:
+        startup_logger.error(f"Critical error during startup: {e}")
+
 # Include routers
 app.include_router(api_router, prefix=config.API_V1_STR)
 
 @app.get("/")
 async def root():
-    return {"message": "🍜 Bienvenue sur l'API Itadaki. Visitez /docs pour la documentation API."}
+    return {"message": "Bienvenue sur l'API Itadaki. Visitez /docs pour la documentation API."}
+
+@app.get("/health")
+async def health_check():
+    """Health check endpoint with model status"""
+    from features.search.services.search_service import SearchService
+    search_service = SearchService.get_instance()
+    
+    return {
+        "status": "healthy",
+        "model_loaded": search_service.is_model_loaded(),
+        "api_version": "1.0.0",
+        "message": "Itadaki API is running"
+    }
 
 if __name__ == "__main__":
     uvicorn.run("main:app", host="0.0.0.0", port=8000, reload=True) 
